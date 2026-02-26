@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Biblioteca</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Minha Biblioteca</h1>
+
+        <div class="cards">
+            <div class="card clickable" onclick="mostrarTabela('quero')">
+                <h2>Quero Ler</h2>
+                <p>{{ total_quero_ler }}</p>
+            </div>
+            
+            <div class="card clickable" onclick="mostrarTabela('lidos')">
+                <h2>Lidos</h2>
+                <p>{{ total_lidos }}</p>
+            </div>
+
+            <div class="card">
+                <h2>Páginas Lidas</h2>
+                <p>{{ paginas }}</p>
+            </div>
+        </div>
+
+        <h2 id="section-title" class="section-title">📚 Livros Lidos</h2>
+        <!-- Tabela Lidos -->
+        <div id="tabela-lidos">
+            <table id="tabelaLivros">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('tabelaLivros',0, this)">Título <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaLivros',1, this)">Autor <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaLivros',2, this)">Ano <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaLivros',3, this)">Páginas <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaLivros',4, this)">Nota <span class="arrow">↕</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for livro in livros_lidos %}
+                    <tr onclick="abrirModal(this)"
+                        data-titulo="{{ livro.titulo }}"
+                        data-autor="{{ livro.autor }}"
+                        data-ano="{{ livro.ano_publicacao }}"
+                        data-paginas="{{ livro.paginas }}"
+                        data-avaliacao="{{ livro.avaliacao }}"
+                        data-isbn="{{ livro.isbn }}">
+                        <td>{{ livro.titulo }}</td>
+                        <td>{{ livro.autor }}</td>
+                        <td>{{ livro.ano_publicacao }}</td>
+                        <td>{{ livro.paginas }}</td>
+                        <td>{{ livro.avaliacao }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Tabela Quero Ler -->
+        <div id="tabela-quero" style="display:none;">
+            <table id="tabelaQuero">                <thead>
+                    <tr>
+                        <th onclick="sortTable('tabelaQuero',0, this)">Título <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaQuero',1, this)">Autor <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaQuero',2, this)">Ano <span class="arrow">↕</span></th>
+                        <th onclick="sortTable('tabelaQuero',3, this)">Páginas <span class="arrow">↕</span></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for livro in quero_ler %}
+                    <tr>
+                        <td>{{ livro.titulo }}</td>
+                        <td>{{ livro.autor }}</td>
+                        <td>{{ livro.ano_publicacao }}</td>
+                        <td>{{ livro.paginas }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modalLivro" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+    
+            <div class="modal-body">
+                <img id="modalCapa" src="" alt="Capa do livro">
+                
+                <div class="modal-info">
+                    <h2 id="modalTitulo"></h2>
+                    <p><strong>Autor:</strong> <span id="modalAutor"></span></p>
+                    <p><strong>Ano:</strong> <span id="modalAno"></span></p>
+                    <p><strong>Páginas:</strong> <span id="modalPaginas"></span></p>
+                    <p><strong>Nota:</strong> <span id="modalNota"></span></p>
+                    <p id="modalDescricao"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
