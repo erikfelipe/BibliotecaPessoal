@@ -150,3 +150,34 @@ tr:hover {
     font-size: 28px;
     cursor: pointer;
 }
+
+.nav-button {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 12px 25px;
+    background-color: #374151;
+    color: #f9fafb;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.nav-button:hover {
+    background-color: #4b5563;
+    transform: translateY(-3px);
+}
+
+.top-nav {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 40px;
+}
+
+.card-small {
+    display: block;
+    font-size: 1rem;
+    font-weight: normal;
+    margin-top: 5px;
+    color: #9ca3af;
+}
