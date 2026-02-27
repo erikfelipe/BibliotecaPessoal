@@ -1,13 +1,15 @@
 from main import app
-from flask import render_template, jsonify
+from flask import render_template,jsonify
 import pandas as pd
-import os
-import requests
+
+def carregar_dados():
+    df = pd.read_csv("./BibliotecaPessoal_v1.csv", sep=';', encoding='latin1')
+    df.columns = df.columns.str.strip()
+    return df
 
 @app.route("/")
 def home():
-    df = pd.read_csv("./BibliotecaPessoal_v1.csv", sep=';', encoding='latin1')
-    df.columns = df.columns.str.strip()
+    df = carregar_dados()
     
     df_lidos = df[df["Status"] == "concluido"]
     df_quero_ler = df[df["Status"] == "quero_ler"]
@@ -27,39 +29,72 @@ def home():
         paginas=paginas,
         livros_lidos=livros_lidos
     )
-API_KEY = ""
 
-@app.route("/capa/<isbn>")
-def buscar_capa(isbn):
-    isbn_limpo = isbn.replace("-", "")
+@app.route("/estatisticas")
+def estatisticas():
+    df = carregar_dados()
+    df_lidos = df[df["Status"] == "concluido"].copy()
 
-    caminho_imagem = f"static/covers/{isbn_limpo}.jpg"
+    df_lidos["paginas"] = pd.to_numeric(df_lidos["paginas"], errors="coerce")
 
-    # 🔥 Se já existe, retorna caminho direto
-    if os.path.exists(caminho_imagem):
-        return jsonify({
-            "url": f"/static/covers/{isbn_limpo}.jpg"
-        })
+    # Estatísticas já existentes
+    genero_mais_lido = (
+        df_lidos["genero"].mode()[0]
+        if not df_lidos["genero"].mode().empty
+        else "N/A"
+    )
 
-    url_google = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn_limpo}&key={API_KEY}"
+    autor_mais_lido = (
+        df_lidos["autor"].mode()[0]
+        if not df_lidos["autor"].mode().empty
+        else "N/A"
+    )
 
-    response = requests.get(url_google)
-    data = response.json()
+    if not df_lidos.empty and df_lidos["paginas"].notna().any():
+        linha_maior = df_lidos.loc[df_lidos["paginas"].idxmax()]
+        maior_livro = linha_maior["titulo"]
+        paginas_maior_livro = linha_maior["paginas"]
+    else:
+        maior_livro = None
+        paginas_maior_livro = None
 
-    if data.get("totalItems", 0) > 0:
-        book = data["items"][0]["volumeInfo"]
-        image_url = book.get("imageLinks", {}).get("thumbnail")
+    generos_count = df_lidos["genero"].value_counts()
 
-        if image_url:
-            image_response = requests.get(image_url)
+    generos_labels = generos_count.index.tolist()
+    generos_values = generos_count.values.tolist()
 
-            with open(caminho_imagem, "wb") as f:
-                f.write(image_response.content)
+    return render_template(
+        "estatisticas.html",
+        genero_mais_lido=genero_mais_lido,
+        autor_mais_lido=autor_mais_lido,
+        maior_livro=maior_livro,
+        paginas_maior_livro=paginas_maior_livro,
+        generos_labels=generos_labels,
+        generos_values=generos_values
+    )
 
-            return jsonify({
-                "url": f"/static/covers/{isbn_limpo}.jpg"
-            })
+@app.route("/api/generos")
+def api_generos():
+    df = carregar_dados()
+
+    df_lidos = df[df["Status"] == "concluido"]
+
+    generos_count = df_lidos["genero"].value_counts()
 
     return jsonify({
-        "url": "/static/sem-capa.png"
+        "labels": generos_count.index.tolist(),
+        "values": generos_count.values.tolist()
+    })
+
+@app.route("/api/autores")
+def api_autores():
+    df = carregar_dados()
+
+    df_lidos = df[df["Status"] == "concluido"]
+
+    autores_count = df_lidos["autor"].value_counts()
+
+    return jsonify({
+        "labels": autores_count.index.tolist(),
+        "values": autores_count.values.tolist()
     })
