@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="{{ url_for('home') }}" class="nav-button">
+            ← Voltar
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>📊 Estatísticas</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h2>Gênero mais Lido</h2>
+                <p>{{ genero_mais_lido }}</p>
+            </div>
+
+            <div class="card">
+                <h2>Autor mais Lido</h2>
+                <p>{{ autor_mais_lido }}</p>
+            </div>
+
+            <div class="card">
+                <h2>Maior Livro</h2>
+                {% if maior_livro %}
+                <p>{{ maior_livro }}</p>
+                <span class="card-small">
+                    {{ paginas_maior_livro }} páginas
+                </span>
+                {% else %}
+                <p>N/A</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <h2 class="section-title">📚 Gêneros Mais Lidos</h2>
+
+        <canvas id="graficoGeneros" style="width: 800px; margin: 0 auto;"></canvas>
+
+        <h2 class="section-title">📚 Top 10 Autores Mais Lidos</h2>
+
+        <canvas id="graficoAutores" style="width: 800px; margin: 0 auto;"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='estatisticas.js') }}"></script>
+</body>
+</html>
