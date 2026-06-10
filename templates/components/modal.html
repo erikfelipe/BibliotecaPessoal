@@ -1,0 +1,25 @@
+<div id="modal" class="modal">
+    <div class="modal-content">
+
+        <h2>✏️ Editar Livro</h2>
+
+        <form id="formEditar">
+            <input type="hidden" id="form-mode" value="edit">
+            <input type="hidden" id="edit-id">
+
+            <input type="text" id="edit-titulo" placeholder="Título">
+            <input type="text" id="edit-autor" placeholder="Autor">
+            <input type="number" id="edit-ano" placeholder="Ano">
+            <input type="number" id="edit-paginas" placeholder="Páginas">
+            <div id="nota-field">
+                <input type="number" step="0.5" min="0" max="5" id="edit-avaliacao" placeholder="Nota">
+            </div>
+            <input type="text" id="edit-status">
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Salvar</button>
+                <button type="button" class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+            </div>
+        </form>
+
+    </div>
+</div>

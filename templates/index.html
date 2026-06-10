@@ -1,0 +1,39 @@
+    {% extends "layout.html" %}
+    {% from "components/table.html" import render_table %}
+
+    {% block content %}
+
+    <h1>Minha Biblioteca</h1>
+
+    <div class="cards">
+        <div class="card clickable" onclick="mostrarTabela('quero')">
+            <h2>Quero Ler</h2>
+            <p>{{ total_quero_ler }}</p>
+        </div>
+        
+        <div class="card clickable" onclick="mostrarTabela('lidos')">
+            <h2>Lidos</h2>
+            <p>{{ total_lidos }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Páginas Lidas</h2>
+            <p>{{ paginas }}</p>
+        </div>
+    </div>
+
+    <h2 id="section-title" class="section-title">📚 Livros Lidos</h2>
+    <!-- Tabela Lidos -->
+    <div id="tabela-lidos">
+        {{ render_table("tabelaLivros", livros_lidos, true) }}
+    </div>
+    
+    <!-- Tabela Quero Ler -->
+    <div id="tabela-quero" style="display:none;">
+        {{ render_table("tabelaQuero", quero_ler, false) }}
+    </div>
+</div>
+
+{% include "components/modal.html" %}
+
+{% endblock %}

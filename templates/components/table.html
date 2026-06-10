@@ -1,0 +1,55 @@
+{% macro render_table(id, livros, show_rating=false) %}
+<table id="{{ id }}">
+    <thead>
+        <button class="btn-actions" onclick="abrirModalAdicionar()">
+            ➕
+        </button>
+        <tr>
+            <th onclick="sortTable('{{ id }}',0,this)">Título <span class="arrow">↕</span></th>
+            <th onclick="sortTable('{{ id }}',1,this)">Autor <span class="arrow">↕</span></th>
+            <th onclick="sortTable('{{ id }}',2,this)">Ano <span class="arrow">↕</span></th>
+            <th onclick="sortTable('{{ id }}',3,this)">Páginas <span class="arrow">↕</span></th>
+
+            {% if show_rating %}
+            <th onclick="sortTable('{{ id }}',4,this)">Nota <span class="arrow">↕</span></th>
+            {% endif %}
+
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for livro in livros %}
+        <tr>
+            <td>{{ livro.titulo }}</td>
+            <td>{{ livro.autor }}</td>
+            <td>{{ livro.ano_publicacao }}</td>
+            <td>{{ livro.paginas }}</td>
+
+            {% if show_rating %}
+            <td>{{ livro.avaliacao }}</td>
+            {% endif %}
+
+            <td>
+                <button class="btn-actions"
+                    data-id="{{ livro.id }}"
+                    data-titulo="{{ livro.titulo }}"
+                    data-autor="{{ livro.autor }}"
+                    data-ano="{{ livro.ano_publicacao }}"
+                    data-paginas="{{ livro.paginas }}"
+                    data-avaliacao="{{ livro.avaliacao }}"
+                    data-status="{{ livro.status }}"
+                    onclick="abrirModalFromButton(this)">
+                    ✏️
+                </button>
+
+                <button class="btn-actions"
+                    onclick="deletarLivro('{{ livro.id }}')">
+                    🗑️
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endmacro %}
